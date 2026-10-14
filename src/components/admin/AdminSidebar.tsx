@@ -19,7 +19,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
+import { useBrand, BrandLogoRenderer, BrandNameDisplay } from '@/context/BrandContext';
 
 interface AdminSidebarProps {
   onCloseMobile?: () => void;
@@ -73,8 +73,8 @@ export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
             />
           </div>
           <div className="overflow-hidden">
-            <span className="text-lg font-black tracking-tight text-white block truncate">
-              {brandName || 'CampRent'}
+            <span className="text-lg font-black tracking-tight block truncate">
+              <BrandNameDisplay name={brandName} isDark={true} />
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-400 block -mt-1">
               Admin Portal

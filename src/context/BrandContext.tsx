@@ -98,6 +98,58 @@ export function BrandLogoRenderer({
   }
 }
 
+export function BrandNameDisplay({
+  name = 'CampRent',
+  isDark = false,
+  className = '',
+}: {
+  name?: string;
+  isDark?: boolean;
+  className?: string;
+}) {
+  const brand = name || 'CampRent';
+  const lower = brand.toLowerCase();
+  const campIdx = lower.indexOf('camp');
+
+  if (campIdx !== -1) {
+    const rentIdx = lower.indexOf('rent', campIdx + 4);
+    if (rentIdx !== -1) {
+      const before = brand.slice(0, campIdx);
+      const camp = brand.slice(campIdx, campIdx + 4);
+      const mid = brand.slice(campIdx + 4, rentIdx);
+      const rent = brand.slice(rentIdx, rentIdx + 4);
+      const after = brand.slice(rentIdx + 4);
+
+      return (
+        <span className={className}>
+          {before}
+          <span className={isDark ? 'text-white' : 'text-gray-950'}>{camp}</span>
+          {mid}
+          <span className={isDark ? 'text-emerald-400' : 'text-[#165a3d]'}>{rent}</span>
+          {after}
+        </span>
+      );
+    }
+  }
+
+  // Fallback for custom multi-word brand name
+  const parts = brand.split(' ');
+  if (parts.length >= 2) {
+    return (
+      <span className={className}>
+        <span className={isDark ? 'text-white' : 'text-gray-950'}>{parts[0]}</span>{' '}
+        <span className={isDark ? 'text-emerald-400' : 'text-[#165a3d]'}>{parts.slice(1).join(' ')}</span>
+      </span>
+    );
+  }
+
+  return (
+    <span className={className}>
+      <span className={isDark ? 'text-white' : 'text-gray-950'}>{brand}</span>
+    </span>
+  );
+}
+
 export function BrandProvider({ children }: { children: React.ReactNode }) {
   const [settings, setSettings] = useState<BrandSettings>(defaultBrandSettings);
 

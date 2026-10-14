@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { parseGoogleMapsUrl } from '@/lib/maps';
-import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
+import { useBrand, BrandLogoRenderer, BrandNameDisplay } from '@/context/BrandContext';
 
 interface SettingsProps {
   initialSettings: Record<string, string>;
@@ -278,8 +278,8 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
                     />
                   </div>
                   <div>
-                    <span className="text-base font-black text-white block leading-tight">
-                      {brandName || 'CampRent'}
+                    <span className="text-base font-black block leading-tight">
+                      <BrandNameDisplay name={brandName} isDark={true} />
                     </span>
                     {brandTagline && (
                       <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-400 block">
@@ -306,8 +306,8 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
                     />
                   </div>
                   <div>
-                    <span className="text-base font-black text-primary block leading-tight">
-                      {brandName || 'CampRent'}
+                    <span className="text-base font-black block leading-tight">
+                      <BrandNameDisplay name={brandName} isDark={false} />
                     </span>
                     {brandTagline && (
                       <span className="text-[9px] uppercase font-bold tracking-widest text-text-muted block">

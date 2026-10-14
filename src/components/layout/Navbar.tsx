@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
+import { useBrand, BrandLogoRenderer, BrandNameDisplay } from '@/context/BrandContext';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -92,15 +92,17 @@ export default function Navbar() {
             {/* Logo & Configurable Brand Name */}
             <Link
               href="/"
-              className="flex items-center gap-2.5 sm:gap-3 group shrink-0 min-h-[44px]"
+              className={`flex items-center gap-2.5 sm:gap-3 group shrink-0 min-h-[44px] transition-all ${
+                isTransparent
+                  ? 'bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-2xl shadow-sm border border-white/40'
+                  : ''
+              }`}
             >
               <div
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all group-hover:scale-105 ${
                   brandLogoType !== 'preset' && brandLogoUrl
-                    ? 'bg-white shadow-sm overflow-hidden p-0.5 border border-white/20'
-                    : isTransparent
-                    ? 'text-white'
-                    : 'bg-primary text-white shadow-md shadow-primary/20'
+                    ? 'bg-white shadow-xs overflow-hidden p-0.5 border border-gray-100'
+                    : 'bg-primary text-white shadow-sm'
                 }`}
               >
                 <BrandLogoRenderer
@@ -116,19 +118,11 @@ export default function Navbar() {
                 />
               </div>
               <div className="flex flex-col">
-                <span
-                  className={`text-xl sm:text-2xl font-black tracking-tight leading-none transition-colors ${
-                    isTransparent ? 'text-white' : 'text-primary'
-                  }`}
-                >
-                  {brandName || 'CampRent'}
+                <span className="text-xl sm:text-2xl font-black tracking-tight leading-none">
+                  <BrandNameDisplay name={brandName} isDark={false} />
                 </span>
                 {brandTagline && (
-                  <span
-                    className={`text-[9px] uppercase font-bold tracking-widest mt-0.5 transition-colors ${
-                      isTransparent ? 'text-white/70' : 'text-text-muted'
-                    }`}
-                  >
+                  <span className="text-[9px] uppercase font-bold tracking-widest mt-0.5 text-text-muted">
                     {brandTagline}
                   </span>
                 )}
@@ -298,8 +292,8 @@ export default function Navbar() {
                     />
                   </div>
                   <div>
-                    <span className="font-black text-lg text-primary block leading-tight">
-                      {brandName || 'CampRent'}
+                    <span className="font-black text-lg block leading-tight">
+                      <BrandNameDisplay name={brandName} isDark={false} />
                     </span>
                     {brandTagline && (
                       <span className="text-[9px] uppercase font-bold tracking-widest text-text-muted block">

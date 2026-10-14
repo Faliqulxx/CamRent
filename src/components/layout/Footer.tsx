@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Phone, MapPin, Mail, ShieldCheck, Heart } from 'lucide-react';
 import { parseGoogleMapsUrl } from '@/lib/maps';
-import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
+import { useBrand, BrandLogoRenderer, BrandNameDisplay } from '@/context/BrandContext';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -69,8 +69,8 @@ export default function Footer() {
                 />
               </div>
               <div>
-                <span className="text-xl font-bold tracking-tight text-white block leading-tight">
-                  {brandName || 'CampRent'}
+                <span className="text-xl font-bold tracking-tight block leading-tight">
+                  <BrandNameDisplay name={brandName} isDark={true} />
                 </span>
                 {brandTagline && (
                   <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-400 block">
