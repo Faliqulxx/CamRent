@@ -18,9 +18,13 @@ import {
   Mail,
   Clock,
   ExternalLink,
+  Palette,
+  Sparkles,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { parseGoogleMapsUrl } from '@/lib/maps';
+import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
 
 interface SettingsProps {
   initialSettings: Record<string, string>;
@@ -28,6 +32,19 @@ interface SettingsProps {
 }
 
 export default function SettingsManager({ initialSettings, staffList }: SettingsProps) {
+  const { refreshBrand, updateBrandLocally } = useBrand();
+
+  // Brand Identity (Logo & Text beside logo)
+  const [brandName, setBrandName] = useState(initialSettings['brand_name'] || 'CampRent');
+  const [brandTagline, setBrandTagline] = useState(initialSettings['brand_tagline'] || 'Outdoor Equipment');
+  const [brandLogoType, setBrandLogoType] = useState<'preset' | 'url'>(
+    (initialSettings['brand_logo_type'] === 'url' ? 'url' : 'preset')
+  );
+  const [brandLogoPreset, setBrandLogoPreset] = useState<'mountain' | 'tent' | 'compass' | 'trees' | 'flame'>(
+    (initialSettings['brand_logo_preset'] as any) || 'mountain'
+  );
+  const [brandLogoUrl, setBrandLogoUrl] = useState(initialSettings['brand_logo_url'] || '');
+
   // Store identity & Location
   const [storeName, setStoreName] = useState(initialSettings['store_name'] || 'CampRent Adventure Rental Bandung');
   const [whatsapp, setWhatsapp] = useState(initialSettings['whatsapp_number'] || '+62 812-3456-7890');
@@ -106,6 +123,11 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          brand_name: brandName,
+          brand_tagline: brandTagline,
+          brand_logo_type: brandLogoType,
+          brand_logo_preset: brandLogoPreset,
+          brand_logo_url: brandLogoUrl,
           store_name: storeName,
           whatsapp_number: whatsapp,
           store_address: storeAddress,
@@ -133,6 +155,15 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
         throw new Error(data.error || 'Gagal menyimpan pengaturan toko.');
       }
 
+      updateBrandLocally({
+        brandName,
+        brandTagline,
+        brandLogoType,
+        brandLogoPreset,
+        brandLogoUrl,
+      });
+      await refreshBrand();
+
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 4000);
     } catch (err: any) {
@@ -148,17 +179,17 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
       <div>
         <h1 className="text-2xl font-black text-text tracking-tight flex items-center gap-2">
           <Settings className="w-6 h-6 text-primary" />
-          Pengaturan Toko & Metode Pembayaran
+          Pengaturan Toko &amp; Identitas Brand
         </h1>
         <p className="text-xs text-text-muted mt-0.5">
-          Atur informasi kontak bisnis, nomor WhatsApp reservasi, rekening transfer bank, serta e-wallet DANA & GoPay resmi toko.
+          Atur nama brand, logo &amp; teks navbar, informasi kontak bisnis, nomor WhatsApp reservasi, dan rekening pembayaran toko.
         </p>
       </div>
 
       {savedSuccess && (
         <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2 animate-in fade-in">
           <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>Pengaturan toko & metode pembayaran (Bank, DANA, GoPay) berhasil diperbarui dan tersimpan di database!</span>
+          <span>Pengaturan identitas brand, logo, dan rekening berhasil disimpan dan diperbarui!</span>
         </div>
       )}
 
@@ -170,11 +201,221 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
       )}
 
       <form onSubmit={handleSave} className="space-y-6">
+        {/* IDENTITAS BRAND & LOGO NAVBAR */}
+        <div className="bg-white rounded-2xl border border-border p-6 shadow-sm space-y-5 text-xs">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
+            <div>
+              <h3 className="font-bold text-sm text-text flex items-center gap-2">
+                <Palette className="w-4 h-4 text-primary" />
+                Identitas Brand &amp; Logo Website
+              </h3>
+              <p className="text-[11px] text-text-muted mt-0.5">
+                Ganti logo dan tulisan di sampingnya yang tampil di navbar, header, dan footer seluruh website.
+              </p>
+            </div>
+            <span className="text-[10px] text-emerald-800 font-bold px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 shrink-0">
+              Tampil di Seluruh Halaman
+            </span>
+          </div>
+
+          {/* Live Preview Cards */}
+          <div className="p-4 rounded-2xl bg-gray-50 border border-gray-200/80 space-y-2">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 block">
+              Pratinjau Langsung (Live Preview Navbar):
+            </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+              {/* Preview 1: Dark / Hero Navbar */}
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 border border-gray-700 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white">
+                    <BrandLogoRenderer
+                      type={brandLogoType}
+                      preset={brandLogoPreset}
+                      url={brandLogoUrl}
+                      brandName={brandName}
+                      className="w-7 h-7"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-base font-black text-white block leading-tight">
+                      {brandName || 'CampRent'}
+                    </span>
+                    {brandTagline && (
+                      <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-400 block">
+                        {brandTagline}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="text-[10px] font-medium text-gray-400 bg-white/10 px-2 py-0.5 rounded">
+                  Navbar Beranda
+                </span>
+              </div>
+
+              {/* Preview 2: Light Navbar */}
+              <div className="p-3.5 rounded-xl bg-white border border-gray-200 flex items-center justify-between shadow-xs">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white shadow-xs">
+                    <BrandLogoRenderer
+                      type={brandLogoType}
+                      preset={brandLogoPreset}
+                      url={brandLogoUrl}
+                      brandName={brandName}
+                      className="w-6 h-6"
+                    />
+                  </div>
+                  <div>
+                    <span className="text-base font-black text-primary block leading-tight">
+                      {brandName || 'CampRent'}
+                    </span>
+                    {brandTagline && (
+                      <span className="text-[9px] uppercase font-bold tracking-widest text-text-muted block">
+                        {brandTagline}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span className="text-[10px] font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                  Navbar Halaman Lain
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-bold text-text mb-1">
+                Tulisan di Samping Logo (Nama Brand):
+              </label>
+              <input
+                type="text"
+                value={brandName}
+                onChange={(e) => setBrandName(e.target.value)}
+                placeholder="Contoh: CampRent"
+                className="w-full p-2.5 bg-gray-50 border border-border rounded-xl font-bold text-text outline-none focus:border-primary focus:bg-white text-base md:text-xs"
+                required
+              />
+              <span className="text-[11px] text-text-muted mt-1 block">
+                Teks utama yang tampil tebal di samping logo pada header navigasi.
+              </span>
+            </div>
+
+            <div>
+              <label className="block font-bold text-text mb-1">
+                Subteks / Tagline Brand (Opsional):
+              </label>
+              <input
+                type="text"
+                value={brandTagline}
+                onChange={(e) => setBrandTagline(e.target.value)}
+                placeholder="Contoh: Outdoor Equipment"
+                className="w-full p-2.5 bg-gray-50 border border-border rounded-xl font-bold text-text outline-none focus:border-primary focus:bg-white text-base md:text-xs"
+              />
+              <span className="text-[11px] text-text-muted mt-1 block">
+                Teks kecil di bawah nama brand (bisa dikosongkan jika ingin nama brand saja).
+              </span>
+            </div>
+          </div>
+
+          {/* Logo Type Selector */}
+          <div className="space-y-3 pt-2">
+            <label className="block font-bold text-text">Pilihan Logo:</label>
+            <div className="grid grid-cols-2 gap-3 max-w-md">
+              <button
+                type="button"
+                onClick={() => setBrandLogoType('preset')}
+                className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-2.5 ${
+                  brandLogoType === 'preset'
+                    ? 'border-primary bg-emerald-50/60 text-primary ring-2 ring-primary/20'
+                    : 'border-border bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <Sparkles className="w-4 h-4 text-primary shrink-0" />
+                <div>
+                  <span className="block text-xs">Pilih Ikon Preset</span>
+                  <span className="block text-[10px] text-text-muted font-normal">Tajam &amp; Sesuai Tema</span>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setBrandLogoType('url')}
+                className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-2.5 ${
+                  brandLogoType === 'url'
+                    ? 'border-primary bg-emerald-50/60 text-primary ring-2 ring-primary/20'
+                    : 'border-border bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <ImageIcon className="w-4 h-4 text-primary shrink-0" />
+                <div>
+                  <span className="block text-xs">URL Gambar Kustom</span>
+                  <span className="block text-[10px] text-text-muted font-normal">Gunakan Logo Sendiri</span>
+                </div>
+              </button>
+            </div>
+
+            {brandLogoType === 'preset' ? (
+              <div className="space-y-2 pt-2">
+                <span className="text-[11px] font-semibold text-text-muted block">
+                  Pilih desain ikon logo:
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+                  {[
+                    { id: 'mountain', label: 'Gunung (Default)', desc: 'Sesuai Desain Beranda' },
+                    { id: 'tent', label: 'Tenda Camping', desc: 'Outdoor Rental' },
+                    { id: 'compass', label: 'Kompas', desc: 'Petualangan Alam' },
+                    { id: 'trees', label: 'Hutan Pinus', desc: 'Wisata Alam' },
+                    { id: 'flame', label: 'Api Unggun', desc: 'Hangat & Akrab' },
+                  ].map((p) => {
+                    const isSelected = brandLogoPreset === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => setBrandLogoPreset(p.id as any)}
+                        className={`p-3 rounded-xl border text-center transition-all flex flex-col items-center gap-2 ${
+                          isSelected
+                            ? 'border-primary bg-emerald-50 text-primary shadow-xs ring-2 ring-primary/20'
+                            : 'border-border bg-white text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
+                          <BrandLogoRenderer preset={p.id as any} className="w-5 h-5 text-accent-mint" />
+                        </div>
+                        <div>
+                          <span className="block text-xs font-bold leading-tight">{p.label}</span>
+                          <span className="block text-[10px] text-text-muted mt-0.5">{p.desc}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-2 pt-2">
+                <label className="block font-bold text-text">
+                  URL Gambar Logo (Link Langsung PNG / SVG / JPG):
+                </label>
+                <input
+                  type="text"
+                  value={brandLogoUrl}
+                  onChange={(e) => setBrandLogoUrl(e.target.value)}
+                  placeholder="https://contoh.com/logo-anda.png atau /images/logo.png"
+                  className="w-full p-2.5 bg-gray-50 border border-border rounded-xl font-medium text-text outline-none focus:border-primary focus:bg-white text-base md:text-xs"
+                />
+                <p className="text-[11px] text-text-muted">
+                  Tips: Gunakan logo dengan format PNG transparan atau SVG berasio 1:1 agar terlihat rapi dan elegan di navbar.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Identitas Bisnis & WhatsApp */}
         <div className="bg-white rounded-2xl border border-border p-6 shadow-sm space-y-4 text-xs">
           <h3 className="font-bold text-sm text-text pb-3 border-b border-border flex items-center gap-2">
             <Store className="w-4 h-4 text-primary" />
-            Identitas Toko & Nomor WhatsApp
+            Identitas Toko &amp; Nomor WhatsApp
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

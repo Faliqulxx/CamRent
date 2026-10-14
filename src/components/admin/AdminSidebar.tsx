@@ -19,6 +19,7 @@ import {
   X,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
 
 interface AdminSidebarProps {
   onCloseMobile?: () => void;
@@ -27,6 +28,7 @@ interface AdminSidebarProps {
 export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const pathname = usePathname();
   const { user, loginAs } = useAuth();
+  const { brandName, brandTagline, brandLogoType, brandLogoPreset, brandLogoUrl } = useBrand();
 
   const navItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
@@ -52,10 +54,18 @@ export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
           className="flex items-center gap-3 min-h-[44px]"
         >
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-md shadow-black/30 shrink-0">
-            <Tent className="w-5 h-5 text-accent-mint" />
+            <BrandLogoRenderer
+              type={brandLogoType}
+              preset={brandLogoPreset}
+              url={brandLogoUrl}
+              brandName={brandName}
+              className="w-6 h-6 text-accent-mint"
+            />
           </div>
-          <div>
-            <span className="text-lg font-black tracking-tight text-white block">CampRent</span>
+          <div className="overflow-hidden">
+            <span className="text-lg font-black tracking-tight text-white block truncate">
+              {brandName || 'CampRent'}
+            </span>
             <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-400 block -mt-1">
               Admin Portal
             </span>

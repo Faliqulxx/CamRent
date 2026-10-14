@@ -21,6 +21,8 @@ import {
   Clock,
   Phone,
   ExternalLink,
+  Truck,
+  ShoppingBag,
 } from 'lucide-react';
 import prisma from '@/lib/prisma';
 import HeroSearchBar from '@/components/home/HeroSearchBar';
@@ -100,89 +102,82 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* 1. Hero Section */}
-      <section className="relative min-h-[560px] md:min-h-[640px] flex items-center justify-center bg-sidebar-bg overflow-hidden px-4 sm:px-6 lg:px-8 py-20">
-        {/* Background Image with Gradient Overlay */}
+      {/* 1. Hero Section matching user screenshot */}
+      <section className="relative min-h-[560px] sm:min-h-[640px] lg:min-h-[720px] flex items-center bg-gray-950 overflow-hidden px-4 sm:px-6 lg:px-8 pt-28 pb-16 sm:py-24">
+        {/* Cinematic Mountain Tent Background */}
         <div
-          className="absolute inset-0 z-0 bg-cover bg-center opacity-40 mix-blend-overlay filter blur-[1px]"
+          className="absolute inset-0 z-0 bg-cover bg-center sm:bg-[center_top]"
           style={{
-            backgroundImage:
-              'url("https://images.unsplash.com/photo-1510312305653-8ed496efae75?w=1600&auto=format&fit=crop&q=80")',
+            backgroundImage: 'url("/images/hero-camping.jpg")',
           }}
         />
-        <div className="absolute inset-0 z-0 bg-gradient-to-t from-sidebar-bg via-sidebar-bg/80 to-transparent" />
+        {/* Subtle dark gradient overlay to ensure text contrast while keeping tent scenic */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-black/80 via-black/45 to-black/10 sm:to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/50 to-transparent z-0" />
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center flex flex-col items-center">
-          {/* Tagline Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent-mint/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold mb-6 backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-            Sistem Rental Resmi CampRent Outdoor Bandung
-          </div>
+        <div className="relative z-10 max-w-7xl mx-auto w-full">
+          <div className="max-w-2xl text-left">
+            <h1 className="text-3xl sm:text-5xl lg:text-[54px] font-black text-white tracking-tight leading-[1.12] drop-shadow-md">
+              Sewa Peralatan Camping<br />untuk Petualanganmu
+            </h1>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-tight leading-tight max-w-3xl drop-shadow-md">
-            Sewa Peralatan Camping untuk Petualanganmu
-          </h1>
+            <p className="mt-4 sm:mt-5 text-sm sm:text-base md:text-lg text-white/90 max-w-xl font-normal leading-relaxed drop-shadow">
+              Tenda, perlengkapan, dan alat camping berkualitas dengan harga terjangkau. Siap menemani perjalanan alam bebasmu.
+            </p>
 
-          <p className="mt-4 sm:mt-6 text-base sm:text-lg text-gray-300 max-w-2xl font-normal leading-relaxed">
-            Jelajahi keindahan alam tanpa ribet beli perlengkapan mahal. Tenda higienis, carrier nyaman, dan cookset lengkap siap dipinjam.
-          </p>
-
-          {/* Search Bar Date Component */}
-          <div className="w-full mt-10">
-            <HeroSearchBar />
+            {/* Floating Search / Booking Card */}
+            <div className="mt-8 sm:mt-10">
+              <HeroSearchBar />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Strip 4 Keunggulan (Conforming to PRD 6.1) */}
-      <section className="border-y border-border bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* 2. Strip 4 Keunggulan matching user screenshot */}
+      <section className="border-b border-border bg-white shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-7 sm:py-9">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            <div className="flex items-start gap-3.5 p-3.5 sm:p-0 rounded-2xl bg-gray-50/70 sm:bg-transparent">
-              <div className="w-12 h-12 rounded-2xl bg-accent-mint flex items-center justify-center text-primary shrink-0">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-text">Peralatan Berkualitas</h4>
-                <p className="text-xs text-text-muted mt-1 leading-snug">
-                  Higienis, diinspeksi berkala, dan selalu dicek sebelum diserahkan.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3.5 p-3.5 sm:p-0 rounded-2xl bg-gray-50/70 sm:bg-transparent">
-              <div className="w-12 h-12 rounded-2xl bg-accent-mint flex items-center justify-center text-primary shrink-0">
+            {/* 1. Peralatan Berkualitas */}
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-gray-50/70 sm:bg-transparent">
+              <div className="w-12 h-12 rounded-2xl bg-[#e8f5ec] text-[#165a3d] flex items-center justify-center shrink-0 shadow-xs">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-bold text-sm text-text">Proses Mudah</h4>
-                <p className="text-xs text-text-muted mt-1 leading-snug">
-                  Cek ketersediaan tanggal, booking online, dan konfirmasi WhatsApp.
-                </p>
+                <h4 className="font-extrabold text-sm text-gray-900">Peralatan Berkualitas</h4>
+                <p className="text-xs text-gray-500 mt-0.5">Terawat dan siap pakai</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3.5 p-3.5 sm:p-0 rounded-2xl bg-gray-50/70 sm:bg-transparent">
-              <div className="w-12 h-12 rounded-2xl bg-accent-mint flex items-center justify-center text-primary shrink-0">
+            {/* 2. Proses Mudah */}
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-gray-50/70 sm:bg-transparent">
+              <div className="w-12 h-12 rounded-2xl bg-[#e8f5ec] text-[#165a3d] flex items-center justify-center shrink-0 shadow-xs">
+                <ShoppingBag className="w-6 h-6" />
+              </div>
+              <div>
+                <h4 className="font-extrabold text-sm text-gray-900">Proses Mudah</h4>
+                <p className="text-xs text-gray-500 mt-0.5">Booking cepat & praktis</p>
+              </div>
+            </div>
+
+            {/* 3. Harga Terjangkau */}
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-gray-50/70 sm:bg-transparent">
+              <div className="w-12 h-12 rounded-2xl bg-[#e8f5ec] text-[#165a3d] flex items-center justify-center shrink-0 shadow-xs">
                 <Tag className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-bold text-sm text-text">Harga Terjangkau</h4>
-                <p className="text-xs text-text-muted mt-1 leading-snug">
-                  Tarif harian transparan, hemat, tanpa perlu deposit uang muka.
-                </p>
+                <h4 className="font-extrabold text-sm text-gray-900">Harga Terjangkau</h4>
+                <p className="text-xs text-gray-500 mt-0.5">Untuk semua kebutuhan</p>
               </div>
             </div>
 
-            <div className="flex items-start gap-3.5 p-3.5 sm:p-0 rounded-2xl bg-gray-50/70 sm:bg-transparent">
-              <div className="w-12 h-12 rounded-2xl bg-accent-mint flex items-center justify-center text-primary shrink-0">
-                <Store className="w-6 h-6" />
+            {/* 4. Pengiriman & Pickup */}
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-gray-50/70 sm:bg-transparent">
+              <div className="w-12 h-12 rounded-2xl bg-[#e8f5ec] text-[#165a3d] flex items-center justify-center shrink-0 shadow-xs">
+                <Truck className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-bold text-sm text-text">Pickup di Toko</h4>
-                <p className="text-xs text-text-muted mt-1 leading-snug">
-                  Ambil langsung di toko Bandung, periksa kondisi bersama staff.
-                </p>
+                <h4 className="font-extrabold text-sm text-gray-900">Pengiriman & Pickup</h4>
+                <p className="text-xs text-gray-500 mt-0.5">Tersedia di area tertentu</p>
               </div>
             </div>
           </div>

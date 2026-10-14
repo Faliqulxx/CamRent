@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Tent, Phone, MapPin, Mail, ShieldCheck, Heart } from 'lucide-react';
+import { Phone, MapPin, Mail, ShieldCheck, Heart } from 'lucide-react';
 import { parseGoogleMapsUrl } from '@/lib/maps';
+import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
 
 export default function Footer() {
   const pathname = usePathname();
+  const { brandName, brandTagline, brandLogoType, brandLogoPreset, brandLogoUrl } = useBrand();
   const [storeSettings, setStoreSettings] = useState({
     store_address: 'Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)',
     whatsapp_number: '+62 812-3456-7890',
@@ -48,9 +50,24 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white">
-                <Tent className="w-5 h-5 text-accent-mint" />
+                <BrandLogoRenderer
+                  type={brandLogoType}
+                  preset={brandLogoPreset}
+                  url={brandLogoUrl}
+                  brandName={brandName}
+                  className="w-5 h-5 text-accent-mint"
+                />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">CampRent</span>
+              <div>
+                <span className="text-xl font-bold tracking-tight text-white block leading-tight">
+                  {brandName || 'CampRent'}
+                </span>
+                {brandTagline && (
+                  <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-400 block">
+                    {brandTagline}
+                  </span>
+                )}
+              </div>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
               Sistem rental peralatan camping terpercaya. Alat higienis, terawat, dan siap menemani petualangan outdoor Anda.

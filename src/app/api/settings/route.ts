@@ -6,6 +6,11 @@ export const dynamic = 'force-dynamic';
 
 const DEFAULT_SETTINGS: Record<string, string> = {
   store_name: 'CampRent Adventure Rental Bandung',
+  brand_name: 'CampRent',
+  brand_tagline: 'Outdoor Equipment',
+  brand_logo_type: 'preset',
+  brand_logo_preset: 'mountain',
+  brand_logo_url: '',
   store_address: 'Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)',
   whatsapp_number: '+62 812-3456-7890',
   store_email: 'info@camprent.id',

@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
+import { BrandProvider } from '@/context/BrandContext';
 
 export const metadata: Metadata = {
   title: 'CampRent — Sistem Rental Peralatan Camping Terlengkap & Terpercaya',
@@ -26,11 +27,13 @@ export default function RootLayout({
     <html lang="id" className="h-full overflow-x-hidden">
       <body className="min-h-full flex flex-col bg-bg-light text-text-main selection:bg-accent-mint selection:text-primary overflow-x-hidden w-full max-w-full">
         <AuthProvider>
-          <CartProvider>
-            <Navbar />
-            <main className="flex-1 w-full max-w-full">{children}</main>
-            <Footer />
-          </CartProvider>
+          <BrandProvider>
+            <CartProvider>
+              <Navbar />
+              <main className="flex-1 w-full max-w-full">{children}</main>
+              <Footer />
+            </CartProvider>
+          </BrandProvider>
         </AuthProvider>
       </body>
     </html>
