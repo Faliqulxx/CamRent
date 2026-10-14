@@ -83,7 +83,9 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 w-full transition-all duration-300 ${
+        className={`${
+          isHome ? 'fixed top-0 left-0 right-0' : 'sticky top-0'
+        } z-40 w-full transition-all duration-300 ${
           isTransparent
             ? 'bg-gradient-to-b from-black/70 via-black/40 to-transparent text-white border-transparent'
             : 'bg-white/95 backdrop-blur-md text-text border-b border-border shadow-xs'
