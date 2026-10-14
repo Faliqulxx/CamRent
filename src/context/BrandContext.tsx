@@ -6,7 +6,7 @@ import { MountainSnow, Tent, Compass, Trees, Flame } from 'lucide-react';
 export interface BrandSettings {
   brandName: string;
   brandTagline: string;
-  brandLogoType: 'preset' | 'url';
+  brandLogoType: 'preset' | 'upload' | 'url';
   brandLogoPreset: 'mountain' | 'tent' | 'compass' | 'trees' | 'flame';
   brandLogoUrl: string;
 }
@@ -19,9 +19,9 @@ interface BrandContextType extends BrandSettings {
 const defaultBrandSettings: BrandSettings = {
   brandName: 'CampRent',
   brandTagline: 'Outdoor Equipment',
-  brandLogoType: 'preset',
+  brandLogoType: 'upload',
   brandLogoPreset: 'mountain',
-  brandLogoUrl: '',
+  brandLogoUrl: '/assets/logo.png',
 };
 
 const BrandContext = createContext<BrandContextType>({
@@ -56,19 +56,20 @@ export function MountainBrandIcon({ className = 'w-6 h-6' }: { className?: strin
 }
 
 export function BrandLogoRenderer({
-  type,
-  preset,
+  type = 'upload',
+  preset = 'mountain',
   url,
   brandName,
   className = 'w-7 h-7',
 }: {
-  type?: 'preset' | 'url';
+  type?: 'preset' | 'upload' | 'url';
   preset?: 'mountain' | 'tent' | 'compass' | 'trees' | 'flame';
   url?: string;
   brandName?: string;
   className?: string;
 }) {
-  if (type === 'url' && url && url.trim() !== '') {
+  // If upload or URL is active and image url is present, display image
+  if (type !== 'preset' && url && url.trim() !== '') {
     return (
       <img
         src={url}
@@ -106,12 +107,17 @@ export function BrandProvider({ children }: { children: React.ReactNode }) {
       if (!res.ok) return;
       const data = await res.json();
       if (data && typeof data === 'object') {
+        const logoUrl = data.brand_logo_url !== undefined && data.brand_logo_url !== ''
+          ? data.brand_logo_url
+          : '/assets/logo.png';
+        const logoType = (data.brand_logo_type === 'preset' ? 'preset' : 'upload') as 'preset' | 'upload' | 'url';
+
         setSettings({
           brandName: data.brand_name || 'CampRent',
           brandTagline: data.brand_tagline !== undefined ? data.brand_tagline : 'Outdoor Equipment',
-          brandLogoType: (data.brand_logo_type === 'url' ? 'url' : 'preset') as 'preset' | 'url',
+          brandLogoType: logoType,
           brandLogoPreset: (data.brand_logo_preset || 'mountain') as 'mountain' | 'tent' | 'compass' | 'trees' | 'flame',
-          brandLogoUrl: data.brand_logo_url || '',
+          brandLogoUrl: logoUrl,
         });
       }
     } catch (err) {

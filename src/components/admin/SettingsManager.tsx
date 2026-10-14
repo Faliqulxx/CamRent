@@ -21,6 +21,9 @@ import {
   Palette,
   Sparkles,
   Image as ImageIcon,
+  UploadCloud,
+  FileImage,
+  RefreshCw,
 } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 import { parseGoogleMapsUrl } from '@/lib/maps';
@@ -37,13 +40,51 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
   // Brand Identity (Logo & Text beside logo)
   const [brandName, setBrandName] = useState(initialSettings['brand_name'] || 'CampRent');
   const [brandTagline, setBrandTagline] = useState(initialSettings['brand_tagline'] || 'Outdoor Equipment');
-  const [brandLogoType, setBrandLogoType] = useState<'preset' | 'url'>(
-    (initialSettings['brand_logo_type'] === 'url' ? 'url' : 'preset')
+  const [brandLogoType, setBrandLogoType] = useState<'preset' | 'upload'>(
+    initialSettings['brand_logo_type'] === 'preset' ? 'preset' : 'upload'
   );
   const [brandLogoPreset, setBrandLogoPreset] = useState<'mountain' | 'tent' | 'compass' | 'trees' | 'flame'>(
     (initialSettings['brand_logo_preset'] as any) || 'mountain'
   );
-  const [brandLogoUrl, setBrandLogoUrl] = useState(initialSettings['brand_logo_url'] || '');
+  const [brandLogoUrl, setBrandLogoUrl] = useState(initialSettings['brand_logo_url'] || '/assets/logo.png');
+
+  // File upload state
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [uploadedFileName, setUploadedFileName] = useState('');
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingLogo(true);
+    setUploadError('');
+
+    try {
+      const formData = new FormData();
+      formData.append('logo', file);
+
+      const res = await fetch('/api/settings/upload-logo', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        throw new Error(data.error || 'Gagal mengunggah file logo.');
+      }
+
+      setBrandLogoUrl(data.url);
+      setBrandLogoType('upload');
+      setUploadedFileName(file.name);
+    } catch (err: any) {
+      console.error(err);
+      setUploadError(err.message || 'Gagal mengunggah file logo.');
+    } finally {
+      setIsUploadingLogo(false);
+    }
+  };
 
   // Store identity & Location
   const [storeName, setStoreName] = useState(initialSettings['store_name'] || 'CampRent Adventure Rental Bandung');
@@ -317,47 +358,136 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
             </div>
           </div>
 
-          {/* Logo Type Selector */}
+          {/* Logo Selection: Direct File Upload or Preset */}
           <div className="space-y-3 pt-2">
-            <label className="block font-bold text-text">Pilihan Logo:</label>
+            <div className="flex items-center justify-between">
+              <label className="block font-bold text-text">Pilihan Logo:</label>
+              <span className="text-[11px] text-text-muted">
+                Pilih unggah file logo sendiri atau pakai ikon bawaan
+              </span>
+            </div>
+
             <div className="grid grid-cols-2 gap-3 max-w-md">
+              <button
+                type="button"
+                onClick={() => setBrandLogoType('upload')}
+                className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-2.5 ${
+                  brandLogoType === 'upload'
+                    ? 'border-primary bg-emerald-50/70 text-primary ring-2 ring-primary/20 shadow-xs'
+                    : 'border-border bg-white text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                <UploadCloud className="w-4 h-4 text-primary shrink-0" />
+                <div>
+                  <span className="block text-xs font-bold">Upload File Logo</span>
+                  <span className="block text-[10px] text-text-muted font-normal">PNG, JPG, WebP, SVG</span>
+                </div>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setBrandLogoType('preset')}
                 className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-2.5 ${
                   brandLogoType === 'preset'
-                    ? 'border-primary bg-emerald-50/60 text-primary ring-2 ring-primary/20'
+                    ? 'border-primary bg-emerald-50/70 text-primary ring-2 ring-primary/20 shadow-xs'
                     : 'border-border bg-white text-gray-600 hover:bg-gray-50'
                 }`}
               >
                 <Sparkles className="w-4 h-4 text-primary shrink-0" />
                 <div>
-                  <span className="block text-xs">Pilih Ikon Preset</span>
-                  <span className="block text-[10px] text-text-muted font-normal">Tajam &amp; Sesuai Tema</span>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setBrandLogoType('url')}
-                className={`p-3 rounded-xl border text-left font-bold transition-all flex items-center gap-2.5 ${
-                  brandLogoType === 'url'
-                    ? 'border-primary bg-emerald-50/60 text-primary ring-2 ring-primary/20'
-                    : 'border-border bg-white text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <ImageIcon className="w-4 h-4 text-primary shrink-0" />
-                <div>
-                  <span className="block text-xs">URL Gambar Kustom</span>
-                  <span className="block text-[10px] text-text-muted font-normal">Gunakan Logo Sendiri</span>
+                  <span className="block text-xs font-bold">Pilih Ikon Preset</span>
+                  <span className="block text-[10px] text-text-muted font-normal">Ikon Grafis Bawaan</span>
                 </div>
               </button>
             </div>
 
-            {brandLogoType === 'preset' ? (
+            {brandLogoType === 'upload' ? (
+              <div className="space-y-3 pt-2">
+                {/* Hidden File Input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png, image/jpeg, image/jpg, image/webp, image/svg+xml"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                />
+
+                {/* Uploaded File Card */}
+                <div className="p-4 rounded-2xl bg-gray-50/80 border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-14 h-14 rounded-2xl bg-white border border-gray-200 shadow-sm flex items-center justify-center p-1 overflow-hidden shrink-0">
+                      {brandLogoUrl ? (
+                        <img
+                          src={brandLogoUrl}
+                          alt="Logo Preview"
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <FileImage className="w-6 h-6 text-gray-400" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-text block">
+                          {uploadedFileName || (brandLogoUrl === '/assets/logo.png' ? 'logo.png (Tersedia di public/assets)' : 'File Logo Aktif')}
+                        </span>
+                        <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+                          Aktif
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-text-muted mt-0.5 break-all">
+                        {brandLogoUrl || 'Belum ada file yang dipilih'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={isUploadingLogo}
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl font-bold text-xs transition-colors flex items-center gap-1.5 shadow-sm active:scale-95 disabled:opacity-50"
+                    >
+                      <UploadCloud className="w-3.5 h-3.5" />
+                      <span>{isUploadingLogo ? 'Mengunggah...' : 'Upload File Baru'}</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBrandLogoUrl('/assets/logo.png');
+                        setBrandLogoType('upload');
+                        setUploadedFileName('logo.png');
+                      }}
+                      className="px-3 py-2 bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 rounded-xl font-semibold text-xs transition-colors flex items-center gap-1.5 shadow-2xs active:scale-95"
+                      title="Gunakan file bawaan public/assets/logo.png"
+                    >
+                      <RefreshCw className="w-3 h-3 text-gray-500" />
+                      <span>Pakai public/assets/logo.png</span>
+                    </button>
+                  </div>
+                </div>
+
+                {uploadError && (
+                  <p className="text-xs text-red-600 font-bold bg-red-50 p-2.5 rounded-xl border border-red-200">
+                    {uploadError}
+                  </p>
+                )}
+
+                <div className="p-3 bg-emerald-50/50 rounded-xl border border-emerald-100 text-[11px] text-text-muted space-y-0.5">
+                  <p className="font-bold text-emerald-900 flex items-center gap-1">
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Upload Langsung:</span>
+                  </p>
+                  <p>
+                    File yang Anda pilih akan langsung diunggah dan disimpan ke server tanpa perlu memasukkan URL manual. Format yang didukung: PNG, JPG, WebP, dan SVG (Maksimal 5MB).
+                  </p>
+                </div>
+              </div>
+            ) : (
               <div className="space-y-2 pt-2">
                 <span className="text-[11px] font-semibold text-text-muted block">
-                  Pilih desain ikon logo:
+                  Pilih desain ikon logo bawaan:
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                   {[
@@ -390,22 +520,6 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
                     );
                   })}
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-2 pt-2">
-                <label className="block font-bold text-text">
-                  URL Gambar Logo (Link Langsung PNG / SVG / JPG):
-                </label>
-                <input
-                  type="text"
-                  value={brandLogoUrl}
-                  onChange={(e) => setBrandLogoUrl(e.target.value)}
-                  placeholder="https://contoh.com/logo-anda.png atau /images/logo.png"
-                  className="w-full p-2.5 bg-gray-50 border border-border rounded-xl font-medium text-text outline-none focus:border-primary focus:bg-white text-base md:text-xs"
-                />
-                <p className="text-[11px] text-text-muted">
-                  Tips: Gunakan logo dengan format PNG transparan atau SVG berasio 1:1 agar terlihat rapi dan elegan di navbar.
-                </p>
               </div>
             )}
           </div>

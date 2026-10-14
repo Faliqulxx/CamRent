@@ -98,7 +98,9 @@ export default function Navbar() {
             >
               <div
                 className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all group-hover:scale-105 ${
-                  isTransparent
+                  brandLogoType !== 'preset' && brandLogoUrl
+                    ? 'bg-white shadow-sm overflow-hidden p-0.5 border border-white/20'
+                    : isTransparent
                     ? 'text-white'
                     : 'bg-primary text-white shadow-md shadow-primary/20'
                 }`}
@@ -108,7 +110,11 @@ export default function Navbar() {
                   preset={brandLogoPreset}
                   url={brandLogoUrl}
                   brandName={brandName}
-                  className="w-7 h-7 sm:w-8 sm:h-8"
+                  className={
+                    brandLogoType !== 'preset' && brandLogoUrl
+                      ? 'w-full h-full object-contain rounded-lg'
+                      : 'w-7 h-7 sm:w-8 sm:h-8'
+                  }
                 />
               </div>
               <div className="flex flex-col">
@@ -326,13 +332,23 @@ export default function Navbar() {
               {/* Drawer Header with Configured Brand */}
               <div className="flex items-center justify-between pb-4 border-b border-border">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white">
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden p-0.5 ${
+                      brandLogoType !== 'preset' && brandLogoUrl
+                        ? 'bg-white shadow-xs border border-gray-200'
+                        : 'bg-primary text-white'
+                    }`}
+                  >
                     <BrandLogoRenderer
                       type={brandLogoType}
                       preset={brandLogoPreset}
                       url={brandLogoUrl}
                       brandName={brandName}
-                      className="w-6 h-6"
+                      className={
+                        brandLogoType !== 'preset' && brandLogoUrl
+                          ? 'w-full h-full object-contain rounded-lg'
+                          : 'w-6 h-6'
+                      }
                     />
                   </div>
                   <div>

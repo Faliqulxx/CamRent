@@ -53,13 +53,23 @@ export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
           onClick={onCloseMobile}
           className="flex items-center gap-3 min-h-[44px]"
         >
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-md shadow-black/30 shrink-0">
+          <div
+            className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md overflow-hidden p-0.5 shrink-0 ${
+              brandLogoType !== 'preset' && brandLogoUrl
+                ? 'bg-white border border-white/20'
+                : 'bg-primary text-white shadow-black/30'
+            }`}
+          >
             <BrandLogoRenderer
               type={brandLogoType}
               preset={brandLogoPreset}
               url={brandLogoUrl}
               brandName={brandName}
-              className="w-6 h-6 text-accent-mint"
+              className={
+                brandLogoType !== 'preset' && brandLogoUrl
+                  ? 'w-full h-full object-contain rounded-lg'
+                  : 'w-6 h-6 text-accent-mint'
+              }
             />
           </div>
           <div className="overflow-hidden">
