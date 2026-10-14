@@ -407,7 +407,7 @@ export default function CatalogClient({
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
               {filteredProducts.map((p) => {
                 const isOutOfStock = p.availableUnits <= 0;
                 const mainImage = p.images[0]?.url || 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800';
@@ -415,7 +415,7 @@ export default function CatalogClient({
                 return (
                   <div
                     key={p.id}
-                    className={`bg-white rounded-2xl sm:rounded-3xl border border-border overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group ${
+                    className={`bg-white rounded-2xl sm:rounded-3xl border border-border overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between group ${
                       isOutOfStock ? 'opacity-75 grayscale-[20%]' : ''
                     }`}
                   >
@@ -428,43 +428,43 @@ export default function CatalogClient({
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         {/* Category */}
-                        <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg text-[11px] font-bold text-primary shadow-xs">
+                        <div className="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 bg-white/95 backdrop-blur-sm px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold text-primary shadow-xs">
                           {p.category.name}
                         </div>
 
                         {/* Availability Pill */}
-                        <div className="absolute bottom-2.5 left-2.5">
+                        <div className="absolute bottom-2 left-2 sm:bottom-2.5 sm:left-2.5">
                           {isOutOfStock ? (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-600/90 text-white text-[10px] sm:text-[11px] font-bold backdrop-blur-sm shadow-xs">
-                              <AlertCircle className="w-3 h-3" />
-                              Penuh / Kosong
+                            <span className="inline-flex items-center gap-1 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-red-600/90 text-white text-[9px] sm:text-[11px] font-bold backdrop-blur-sm shadow-xs">
+                              <AlertCircle className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                              <span className="hidden xs:inline">Penuh / </span>Kosong
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-700/90 text-white text-[10px] sm:text-[11px] font-bold backdrop-blur-sm shadow-xs">
-                              <CheckCircle2 className="w-3 h-3" />
-                              {p.availableUnits} unit siap
+                            <span className="inline-flex items-center gap-1 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg bg-emerald-700/90 text-white text-[9px] sm:text-[11px] font-bold backdrop-blur-sm shadow-xs">
+                              <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                              {p.availableUnits} <span className="hidden xs:inline">unit</span> siap
                             </span>
                           )}
                         </div>
 
                         {p.capacity && p.capacity > 0 && (
-                          <div className="absolute top-2.5 right-2.5 bg-sidebar-bg/90 backdrop-blur-sm px-2 py-0.5 rounded-lg text-[10px] font-bold text-white">
+                          <div className="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 bg-sidebar-bg/90 backdrop-blur-sm px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[10px] font-bold text-white">
                             {p.capacity}P
                           </div>
                         )}
                       </div>
 
                       {/* Info Content */}
-                      <div className="p-4">
-                        <div className="flex items-center gap-1 text-[11px] text-text-muted mb-1">
+                      <div className="p-2.5 sm:p-4">
+                        <div className="flex items-center gap-1 text-[10px] sm:text-[11px] text-text-muted mb-1">
                           <div className="flex items-center text-star">
-                            <Star className="w-3.5 h-3.5 fill-current" />
+                            <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
                           </div>
                           <span className="font-bold text-text">{p.ratingAvg.toFixed(1)}</span>
                           <span>({p.ratingCount})</span>
                         </div>
 
-                        <h3 className="font-bold text-sm text-text group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                        <h3 className="font-bold text-xs sm:text-sm text-text group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                           {p.name}
                         </h3>
 
@@ -475,19 +475,21 @@ export default function CatalogClient({
                     </div>
 
                     {/* Bottom Price & Detail Button */}
-                    <div className="p-4 pt-0">
-                      <div className="pt-3 border-t border-border flex items-center justify-between gap-2">
+                    <div className="p-2.5 sm:p-4 pt-0">
+                      <div className="pt-2 sm:pt-3 border-t border-border flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 sm:gap-2">
                         <div>
-                          <span className="text-[10px] text-text-muted block">Tarif Sewa:</span>
-                          <span className="text-sm sm:text-base font-black text-primary">
-                            {formatCurrency(p.pricePerDay)}
-                          </span>
-                          <span className="text-[10px] text-text-muted">/hr</span>
+                          <span className="text-[9px] sm:text-[10px] text-text-muted block leading-none">Tarif Sewa:</span>
+                          <div className="flex items-baseline gap-0.5 mt-0.5">
+                            <span className="text-xs sm:text-base font-black text-primary leading-tight">
+                              {formatCurrency(p.pricePerDay)}
+                            </span>
+                            <span className="text-[9px] sm:text-[10px] text-text-muted">/hr</span>
+                          </div>
                         </div>
 
                         <Link
                           href={`/catalog/${p.slug}`}
-                          className={`px-3.5 sm:px-4 py-2 min-h-[44px] inline-flex items-center justify-center rounded-xl text-xs font-bold transition-all active:scale-95 ${
+                          className={`w-full xs:w-auto px-2.5 sm:px-4 py-1.5 sm:py-2 min-h-[34px] sm:min-h-[44px] inline-flex items-center justify-center rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold transition-all active:scale-95 ${
                             isOutOfStock
                               ? 'border border-gray-300 text-gray-500 hover:bg-gray-100'
                               : 'border border-primary text-primary hover:bg-primary hover:text-white'

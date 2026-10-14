@@ -234,7 +234,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {featuredProducts.map((p) => {
               const mainImage = p.images[0]?.url || 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800';
               const totalActiveUnits = p.units.length;
@@ -242,7 +242,7 @@ export default async function HomePage() {
               return (
                 <div
                   key={p.id}
-                  className="bg-surface rounded-2xl border border-border overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col"
+                  className="bg-surface rounded-2xl border border-border overflow-hidden shadow-xs hover:shadow-lg transition-all group flex flex-col"
                 >
                   {/* Image */}
                   <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
@@ -251,52 +251,52 @@ export default async function HomePage() {
                       alt={p.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-primary shadow-sm">
+                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-white/90 backdrop-blur-sm px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-bold text-primary shadow-xs">
                       {p.category.name}
                     </div>
                     {p.capacity && p.capacity > 0 && (
-                      <div className="absolute top-3 right-3 bg-sidebar-bg/85 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-semibold text-white">
+                      <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-sidebar-bg/85 backdrop-blur-sm px-1.5 sm:px-2.5 py-0.5 rounded-md sm:rounded-lg text-[10px] sm:text-xs font-semibold text-white">
                         {p.capacity} Orang
                       </div>
                     )}
                   </div>
 
                   {/* Body */}
-                  <div className="p-5 flex-1 flex flex-col justify-between">
+                  <div className="p-3 sm:p-5 flex-1 flex flex-col justify-between">
                     <div>
-                      <div className="flex items-center gap-1 text-xs text-text-muted mb-1.5">
+                      <div className="flex items-center gap-1 text-[10px] sm:text-xs text-text-muted mb-1 sm:mb-1.5">
                         <div className="flex items-center text-star">
-                          <Star className="w-3.5 h-3.5 fill-current" />
+                          <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
                         </div>
                         <span className="font-bold text-text">{p.ratingAvg.toFixed(1)}</span>
-                        <span>({p.ratingCount} ulasan)</span>
+                        <span className="hidden xs:inline">({p.ratingCount} ulasan)</span>
                       </div>
 
-                      <h3 className="font-bold text-base text-text group-hover:text-primary transition-colors line-clamp-1">
+                      <h3 className="font-bold text-xs sm:text-base text-text group-hover:text-primary transition-colors line-clamp-1">
                         {p.name}
                       </h3>
-                      <p className="text-xs text-text-muted mt-1.5 line-clamp-2 leading-relaxed">
+                      <p className="text-xs text-text-muted mt-1.5 line-clamp-2 leading-relaxed hidden sm:block">
                         {p.description}
                       </p>
                     </div>
 
-                    <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
+                    <div className="mt-3 sm:mt-5 pt-2.5 sm:pt-4 border-t border-border flex flex-col xs:flex-row xs:items-center justify-between gap-1.5 sm:gap-2">
                       <div>
-                        <span className="text-[11px] text-text-muted block">Harga sewa:</span>
-                        <div className="text-lg font-black text-primary">
+                        <span className="text-[9px] sm:text-[11px] text-text-muted block leading-none">Harga sewa:</span>
+                        <div className="text-xs sm:text-lg font-black text-primary mt-0.5">
                           {formatCurrency(p.pricePerDay)}
-                          <span className="text-xs font-normal text-text-muted"> /hari</span>
+                          <span className="text-[10px] sm:text-xs font-normal text-text-muted"> /hari</span>
                         </div>
-                        <span className="text-[11px] text-emerald-600 font-semibold block mt-0.5">
-                          ✓ {totalActiveUnits} unit fisik tersedia
+                        <span className="text-[9px] sm:text-[11px] text-emerald-600 font-semibold block mt-0.5">
+                          ✓ {totalActiveUnits} unit siap
                         </span>
                       </div>
 
                       <Link
                         href={`/catalog/${p.slug}`}
-                        className="px-4 py-2.5 min-h-[44px] inline-flex items-center justify-center rounded-xl border border-primary text-primary hover:bg-primary hover:text-white transition-all text-xs font-bold active:scale-95"
+                        className="w-full xs:w-auto px-2.5 sm:px-4 py-1.5 sm:py-2.5 min-h-[34px] sm:min-h-[44px] inline-flex items-center justify-center rounded-lg sm:rounded-xl border border-primary text-primary hover:bg-primary hover:text-white transition-all text-[11px] sm:text-xs font-bold active:scale-95 text-center"
                       >
-                        Detail & Sewa
+                        Detail
                       </Link>
                     </div>
                   </div>
