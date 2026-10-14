@@ -11,7 +11,7 @@ export default function Footer() {
   const pathname = usePathname();
   const { brandName, brandTagline, brandLogoType, brandLogoPreset, brandLogoUrl } = useBrand();
   const [storeSettings, setStoreSettings] = useState({
-    store_address: 'Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)',
+    store_address: 'Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115 (Pickup Langsung di Toko)',
     whatsapp_number: '+62 812-3456-7890',
     store_email: 'info@camprent.id',
     gmaps_url: '',

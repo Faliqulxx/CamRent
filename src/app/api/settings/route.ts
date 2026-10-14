@@ -5,13 +5,13 @@ import { parseGoogleMapsUrl } from '@/lib/maps';
 export const dynamic = 'force-dynamic';
 
 const DEFAULT_SETTINGS: Record<string, string> = {
-  store_name: 'CampRent Adventure Rental Bandung',
+  store_name: 'CampRent Adventure Rental Gresik',
   brand_name: 'CampRent',
   brand_tagline: 'Outdoor Equipment',
   brand_logo_type: 'upload',
   brand_logo_preset: 'mountain',
   brand_logo_url: '/assets/logo.png',
-  store_address: 'Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)',
+  store_address: 'Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115 (Pickup Langsung di Toko)',
   whatsapp_number: '+62 812-3456-7890',
   store_email: 'info@camprent.id',
   store_hours: 'Buka Setiap Hari: 08.00 – 21.00 WIB',

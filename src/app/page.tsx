@@ -58,8 +58,8 @@ export default async function HomePage() {
   ]);
 
   const settingsMap: Record<string, string> = {
-    store_name: 'CampRent Adventure Rental Bandung',
-    store_address: 'Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)',
+    store_name: 'CampRent Adventure Rental Gresik',
+    store_address: 'Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115 (Pickup Langsung di Toko)',
     whatsapp_number: '+62 812-3456-7890',
     store_email: 'info@camprent.id',
     store_hours: 'Buka Setiap Hari: 08.00 – 21.00 WIB',
@@ -354,7 +354,7 @@ export default async function HomePage() {
             </div>
             <h4 className="font-bold text-sm text-text">Pickup & Berangkat</h4>
             <p className="text-xs text-text-muted mt-2 leading-relaxed">
-              Ambil peralatan di toko kami di Bandung, serahkan jaminan identitas asli, periksa kondisi, dan nikmati camping!
+              Ambil peralatan di toko kami di Gresik, serahkan jaminan identitas asli, periksa kondisi, dan nikmati camping!
             </p>
           </div>
         </div>
@@ -370,7 +370,7 @@ export default async function HomePage() {
                 Kunjungi Toko CampRent
               </h2>
               <p className="text-xs sm:text-sm text-text-muted mt-1.5 max-w-xl leading-relaxed">
-                Solusi persewaan alat camping terlengkap, higienis, dan terpercaya di Bandung. Silakan datang langsung untuk cek unit, serah terima alat, atau konsultasi perlengkapan petualangan Anda.
+                Solusi persewaan alat camping terlengkap, higienis, dan terpercaya di Gresik. Silakan datang langsung untuk cek unit, serah terima alat, atau konsultasi perlengkapan petualangan Anda.
               </p>
             </div>
 

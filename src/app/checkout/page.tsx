@@ -31,7 +31,7 @@ export default function CheckoutPage() {
   // Form states
   const [fullName, setFullName] = useState(user?.name || 'Dimas Pratama');
   const [phone, setPhone] = useState(user?.customer?.phone || '081298765432');
-  const [address, setAddress] = useState(user?.customer?.address || 'Jl. Melati No. 15, Sukajadi, Bandung');
+  const [address, setAddress] = useState(user?.customer?.address || 'Jl. Martadinata No. 15, Gresik, Jawa Timur');
   const [collateralType, setCollateralType] = useState('KTP');
   const [notes, setNotes] = useState('');
 
@@ -234,7 +234,7 @@ export default function CheckoutPage() {
               {completedRental.code}
             </span>
             <span className="text-xs text-text-muted block mt-1">
-              Jadwal Pickup: <b>{formatDate(startDate)}</b> di Toko CampRent Bandung
+              Jadwal Pickup: <b>{formatDate(startDate)}</b> di Toko CampRent Gresik
             </span>
           </div>
 
@@ -482,7 +482,7 @@ export default function CheckoutPage() {
                 rows={2}
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder="Jl. Melati No. 15, Sukajadi, Bandung"
+                placeholder="Jl. Martadinata No. 15, Gresik, Jawa Timur"
                 className="w-full px-3.5 py-3 min-h-[44px] bg-gray-50 border border-border rounded-xl text-base md:text-xs font-semibold text-text outline-none focus:border-primary focus:bg-white resize-none"
               />
             </div>

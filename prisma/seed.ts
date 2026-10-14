@@ -27,14 +27,14 @@ async function main() {
   // 1. Settings
   await prisma.setting.createMany({
     data: [
-      { key: 'store_name', value: 'CampRent Adventure Rental Bandung' },
+      { key: 'store_name', value: 'CampRent Adventure Rental Gresik' },
       { key: 'whatsapp_number', value: '6281234567890' },
       { key: 'late_fee_per_day', value: '50000' },
       { key: 'cleaning_fee_default', value: '25000' },
       { key: 'bank_name', value: 'BCA' },
       { key: 'bank_account', value: '8735123456' },
       { key: 'bank_holder', value: 'CampRent Outdoor Indonesia' },
-      { key: 'store_address', value: 'Jl. Riau No. 45, Bandung, Jawa Barat' },
+      { key: 'store_address', value: 'Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115' },
     ],
   });
 
@@ -90,7 +90,7 @@ async function main() {
       id: 'cust_01',
       profileId: customerProfile1.id,
       phone: '081298765432',
-      address: 'Jl. Melati No. 15, Sukajadi, Bandung',
+      address: 'Jl. Martadinata No. 15, Gresik, Jawa Timur',
     },
   });
 
@@ -99,7 +99,7 @@ async function main() {
       id: 'cust_02',
       profileId: customerProfile2.id,
       phone: '081377889900',
-      address: 'Jl. Dago Asri No. 8B, Coblong, Bandung',
+      address: 'Jl. Veteran No. 8B, Kebomas, Gresik',
     },
   });
 
@@ -108,7 +108,7 @@ async function main() {
       id: 'cust_03',
       profileId: customerProfile3.id,
       phone: '082155443322',
-      address: 'Komplek Antapani Indah Blok C3, Bandung',
+      address: 'Komplek Petrokimia Blok C3, Gresik',
     },
   });
 

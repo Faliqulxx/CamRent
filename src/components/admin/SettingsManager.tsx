@@ -87,9 +87,9 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
   };
 
   // Store identity & Location
-  const [storeName, setStoreName] = useState(initialSettings['store_name'] || 'CampRent Adventure Rental Bandung');
+  const [storeName, setStoreName] = useState(initialSettings['store_name'] || 'CampRent Adventure Rental Gresik');
   const [whatsapp, setWhatsapp] = useState(initialSettings['whatsapp_number'] || '+62 812-3456-7890');
-  const [storeAddress, setStoreAddress] = useState(initialSettings['store_address'] || 'Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)');
+  const [storeAddress, setStoreAddress] = useState(initialSettings['store_address'] || 'Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115 (Pickup Langsung di Toko)');
   const [storeEmail, setStoreEmail] = useState(initialSettings['store_email'] || 'info@camprent.id');
   const [storeHours, setStoreHours] = useState(initialSettings['store_hours'] || 'Buka Setiap Hari: 08.00 – 21.00 WIB');
   const [gmapsUrl, setGmapsUrl] = useState(
@@ -577,7 +577,7 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
                 rows={2}
                 value={storeAddress}
                 onChange={(e) => setStoreAddress(e.target.value)}
-                placeholder="Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)"
+                placeholder="Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115 (Pickup Langsung di Toko)"
                 className="w-full p-2.5 bg-gray-50 border border-border rounded-xl font-bold text-text outline-none focus:border-primary focus:bg-white text-base md:text-xs"
               />
               <span className="text-[11px] text-text-muted mt-1 block">

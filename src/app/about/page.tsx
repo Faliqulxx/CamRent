@@ -21,8 +21,8 @@ export const dynamic = 'force-dynamic';
 export default async function AboutPage() {
   const settings = await prisma.setting.findMany();
   const settingsMap: Record<string, string> = {
-    store_name: 'CampRent Adventure Rental Bandung',
-    store_address: 'Jl. Riau No. 45, Bandung, Jawa Barat (Pickup Langsung di Toko)',
+    store_name: 'CampRent Adventure Rental Gresik',
+    store_address: 'Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115 (Pickup Langsung di Toko)',
     whatsapp_number: '+62 812-3456-7890',
     store_email: 'info@camprent.id',
     store_hours: 'Buka Setiap Hari: 08.00 – 21.00 WIB',
@@ -56,7 +56,7 @@ export default async function AboutPage() {
           Teman Setia Petualangan Alam Terbuka Anda
         </h1>
         <p className="text-sm sm:text-base text-text-muted leading-relaxed">
-          CampRent hadir memberikan pengalaman sewa alat camping dan mountaineering yang mudah, higienis, terawat, dan profesional di Bandung.
+          CampRent hadir memberikan pengalaman sewa alat camping dan mountaineering yang mudah, higienis, terawat, dan profesional di Gresik.
         </p>
       </div>
 
@@ -217,7 +217,7 @@ export default async function AboutPage() {
           Siap Memulai Petualangan Seru Anda?
         </h2>
         <p className="text-xs sm:text-sm text-accent-mint/90 max-w-lg mx-auto">
-          Pilih perlengkapan camping favorit Anda sekarang, booking online, dan ambil unit di toko kami di Bandung.
+          Pilih perlengkapan camping favorit Anda sekarang, booking online, dan ambil unit di toko kami di Gresik.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
           <Link

@@ -204,7 +204,7 @@ export default function CartPage() {
             <div className="p-4 rounded-2xl bg-accent-mint/50 border border-primary/20 flex items-start gap-3 text-xs text-text-muted">
               <Store className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <div>
-                <b className="text-text">Pengambilan & Pengembalian:</b> Hanya dilakukan di Toko CampRent Bandung.
+                <b className="text-text">Pengambilan & Pengembalian:</b> Hanya dilakukan di Toko CampRent Gresik.
                 Jaminan identitas fisik (KTP/SIM/KTM) diserahkan saat serah terima barang tanpa deposit uang tunai.
               </div>
             </div>

@@ -14,13 +14,13 @@ export interface ParsedGoogleMaps {
 
 export function parseGoogleMapsUrl(
   input?: string | null,
-  fallbackAddress: string = 'Jl. Riau No. 45, Bandung, Jawa Barat'
+  fallbackAddress: string = 'Jl. Martadinata, Kroman, Kec. Gresik, Kabupaten Gresik, Jawa Timur 61115'
 ): ParsedGoogleMaps {
   let cleaned = (input || '').trim();
 
   // If empty, fallback to address search embed
   if (!cleaned) {
-    const q = encodeURIComponent(fallbackAddress || 'Bandung');
+    const q = encodeURIComponent(fallbackAddress || 'Gresik');
     return {
       embedUrl: `https://maps.google.com/maps?q=${q}&t=&z=15&ie=UTF8&iwloc=&output=embed`,
       directUrl: `https://www.google.com/maps/search/?api=1&query=${q}`,
