@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id        String    @id
+  email     String    @unique
+  name      String
+  role      String    @default("CUSTOMER") // OWNER, STAFF, CUSTOMER
+  customer  Customer?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Customer {
+  id        String    @id @default(cuid())
+  profileId String    @unique
+  profile   Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  phone     String
+  address   String
+  rentals   Rental[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  icon      String?   @default("tent")
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Product {
+  id            String         @id @default(cuid())
+  categoryId    String
+  category      Category       @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  name          String
+  slug          String         @unique
+  description   String
+  capacity      Int?           @default(2)
+  dimension     String?        @default("")
+  weightKg      Float?         @default(1.0)
+  pricePerDay   Int
+  cleaningDays  Int            @default(1)
+  includedItems String         @default("[]") // JSON string: ["Flysheet", "Inner", "Pole", "Peg", "Carry Bag"]
+  ratingAvg     Float          @default(4.8)
+  ratingCount   Int            @default(12)
+  isActive      Boolean        @default(true)
+  images        ProductImage[]
+  units         ProductUnit[]
+  rentalItems   RentalItem[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model ProductUnit {
+  id              String           @id @default(cuid())
+  productId       String
+  product         Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  code            String           @unique // e.g. TND-001, SB-003
+  status          String           @default("AVAILABLE") // AVAILABLE, RESERVED, RENTED, CLEANING, MAINTENANCE, INACTIVE
+  availableAfter  DateTime?
+  notes           String?
+  checklists      Checklist[]
+  maintenances    Maintenance[]
+  rentalItemUnits RentalItemUnit[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+model Rental {
+  id              String        @id @default(cuid())
+  code            String        @unique // format: #CR-YYYY-NNNNN
+  customerId      String
+  customer        Customer      @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  startDate       DateTime
+  endDate         DateTime
+  status          String        @default("WAITING_PAYMENT") // PENDING, WAITING_PAYMENT, CONFIRMED, READY_FOR_PICKUP, RENTED, RETURNING, COMPLETED, CANCELLED, OVERDUE
+  subtotal        Int
+  extraFees       Int           @default(0)
+  total           Int
+  paymentType     String        @default("FULL") // FULL, DP
+  dpAmount        Int           @default(0)
+  remainingAmount Int           @default(0)
+  isPaidOff       Boolean       @default(false)
+  notes           String?
+  expiresAt       DateTime?
+  items           RentalItem[]
+  payments        Payment[]
+  checklists      Checklist[]
+  fees            Fee[]
+  collaterals     Collateral[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model RentalItem {
+  id            String           @id @default(cuid())
+  rentalId      String
+  rental        Rental           @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  productId     String
+  product       Product          @relation(fields: [productId], references: [id], onDelete: Restrict)
+  quantity      Int
+  pricePerDay   Int
+  days          Int
+  subtotal      Int
+  assignedUnits RentalItemUnit[]
+  createdAt     DateTime         @default(now())
+}
+
+model RentalItemUnit {
+  id           String      @id @default(cuid())
+  rentalItemId String
+  rentalItem   RentalItem  @relation(fields: [rentalItemId], references: [id], onDelete: Cascade)
+  unitId       String
+  unit         ProductUnit @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  createdAt    DateTime    @default(now())
+}
+
+model Payment {
+  id        String    @id @default(cuid())
+  rentalId  String
+  rental    Rental    @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  amount    Int
+  type      String    @default("FULL") // FULL, DP, SETTLEMENT
+  method    String    @default("TRANSFER")
+  proofUrl  String?
+  status    String    @default("PENDING") // PENDING, VERIFIED, REJECTED
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Checklist {
+  id        String      @id @default(cuid())
+  rentalId  String
+  rental    Rental      @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  type      String      // PICKUP, RETURN
+  unitId    String
+  unit      ProductUnit @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  condition String      // GOOD, MINOR_DAMAGE, DAMAGED, DIRTY
+  notes     String?
+  photoUrls String      @default("[]") // JSON string: string[]
+  createdBy String      // Staff / Owner name
+  createdAt DateTime    @default(now())
+}
+
+model Fee {
+  id        String   @id @default(cuid())
+  rentalId  String
+  rental    Rental   @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  type      String   // CLEANING, DAMAGE, LATE
+  amount    Int
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model Collateral {
+  id         String    @id @default(cuid())
+  rentalId   String
+  rental     Rental    @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+  type       String    // KTP, SIM, KTM, STUDENT_CARD
+  holderName String
+  status     String    @default("PLANNED") // PLANNED, HELD, RETURNED
+  receivedAt DateTime?
+  returnedAt DateTime?
+  createdAt  DateTime  @default(now())
+}
+
+model Maintenance {
+  id                String      @id @default(cuid())
+  unitId            String
+  unit              ProductUnit @relation(fields: [unitId], references: [id], onDelete: Restrict)
+  issue             String
+  estimatedCost     Int         @default(0)
+  startDate         DateTime
+  expectedReadyDate DateTime
+  status            String      @default("OPEN") // OPEN, IN_PROGRESS, DONE
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
