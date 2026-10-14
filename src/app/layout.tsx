@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import AuthModal from '@/components/auth/AuthModal';
 import { CartProvider } from '@/context/CartContext';
 import { AuthProvider } from '@/context/AuthContext';
 import { BrandProvider } from '@/context/BrandContext';
@@ -30,6 +31,7 @@ export default function RootLayout({
           <BrandProvider>
             <CartProvider>
               <Navbar />
+              <AuthModal />
               <main className="flex-1 w-full max-w-full">{children}</main>
               <Footer />
             </CartProvider>

@@ -18,7 +18,12 @@ export interface UserSession {
 interface AuthContextType {
   user: UserSession | null;
   isLoading: boolean;
+  isAuthModalOpen: boolean;
+  authModalTab: 'login' | 'register';
+  openAuthModal: (tab?: 'login' | 'register') => void;
+  closeAuthModal: () => void;
   loginAs: (role: 'OWNER' | 'STAFF' | 'CUSTOMER' | 'GUEST') => Promise<void>;
+  setUserSession: (user: UserSession | null) => void;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
 }
@@ -28,7 +33,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<'login' | 'register'>('login');
   const router = useRouter();
+
+  const openAuthModal = (tab: 'login' | 'register' = 'login') => {
+    setAuthModalTab(tab);
+    setIsAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+  };
+
+  const setUserSession = (sessionUser: UserSession | null) => {
+    setUser(sessionUser);
+    router.refresh();
+  };
 
   const refreshSession = async () => {
     try {
@@ -84,7 +105,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isLoading,
+        isAuthModalOpen,
+        authModalTab,
+        openAuthModal,
+        closeAuthModal,
         loginAs,
+        setUserSession,
         logout,
         refreshSession,
       }}

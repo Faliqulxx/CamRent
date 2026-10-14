@@ -35,6 +35,15 @@ export default function CheckoutPage() {
   const [collateralType, setCollateralType] = useState('KTP');
   const [notes, setNotes] = useState('');
 
+  // Sync form if user logs in or switches
+  useEffect(() => {
+    if (user) {
+      if (user.name) setFullName(user.name);
+      if (user.customer?.phone) setPhone(user.customer.phone);
+      if (user.customer?.address) setAddress(user.customer.address);
+    }
+  }, [user]);
+
   // Payment Option & DP Calculation (PRD & User Request)
   // DP hanya berlaku jika total sewa > 80.000 dengan minimal 50%
   const canUseDp = subtotal > 80000;

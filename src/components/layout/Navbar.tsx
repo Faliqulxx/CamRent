@@ -22,7 +22,7 @@ import { useBrand, BrandLogoRenderer } from '@/context/BrandContext';
 export default function Navbar() {
   const pathname = usePathname();
   const { totalItemsCount } = useCart();
-  const { user, loginAs, logout } = useAuth();
+  const { user, openAuthModal, logout } = useAuth();
   const { brandName, brandTagline, brandLogoType, brandLogoPreset, brandLogoUrl } = useBrand();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -228,7 +228,7 @@ export default function Navbar() {
               ) : (
                 <div className="hidden sm:flex items-center gap-3">
                   <button
-                    onClick={() => loginAs('CUSTOMER')}
+                    onClick={() => openAuthModal('login')}
                     className={`text-sm font-semibold transition-colors px-2 py-1 ${
                       isTransparent ? 'text-white hover:text-white/80' : 'text-gray-700 hover:text-primary'
                     }`}
@@ -236,7 +236,7 @@ export default function Navbar() {
                     Login
                   </button>
                   <button
-                    onClick={() => loginAs('CUSTOMER')}
+                    onClick={() => openAuthModal('register')}
                     className="inline-flex items-center justify-center px-5 py-2 min-h-[38px] text-xs font-bold rounded-full bg-[#165a3d] text-white hover:bg-[#124b32] transition-all shadow-md shadow-[#165a3d]/25 active:scale-95"
                   >
                     Register
@@ -381,13 +381,19 @@ export default function Navbar() {
               ) : (
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    onClick={() => loginAs('CUSTOMER')}
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      openAuthModal('login');
+                    }}
                     className="w-full py-3 min-h-[44px] border border-gray-300 rounded-xl font-bold text-xs text-gray-700 hover:bg-gray-50"
                   >
                     Login
                   </button>
                   <button
-                    onClick={() => loginAs('CUSTOMER')}
+                    onClick={() => {
+                      setDrawerOpen(false);
+                      openAuthModal('register');
+                    }}
                     className="w-full py-3 min-h-[44px] bg-[#165a3d] text-white rounded-xl font-bold text-xs shadow-md"
                   >
                     Register
