@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { formatCurrency, cn } from '@/lib/utils';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import {
   addDays,
   addMonths,
@@ -64,6 +65,7 @@ interface ProductDetailProps {
 export default function ProductDetailClient({ product, dailyBookings }: ProductDetailProps) {
   const router = useRouter();
   const { startDate, endDate, setDateRange, addToCart } = useCart();
+  const { user, openAuthModal } = useAuth();
 
   const [selectedImageIdx, setSelectedImageIdx] = useState(0);
   const [selectedStartDate, setSelectedStartDate] = useState(startDate);
@@ -97,6 +99,10 @@ export default function ProductDetailClient({ product, dailyBookings }: ProductD
   const today = startOfDay(new Date());
 
   const handleAddToCart = () => {
+    if (!user) {
+      openAuthModal('login');
+      return;
+    }
     setDateRange(selectedStartDate, selectedEndDate);
     addToCart({
       productId: product.id,

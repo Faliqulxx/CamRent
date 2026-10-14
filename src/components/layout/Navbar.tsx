@@ -175,23 +175,25 @@ export default function Navbar() {
                 <Search className="w-5 h-5" />
               </Link>
 
-              {/* Cart Button with Counter Badge */}
-              <Link
-                href="/cart"
-                className={`relative min-h-[40px] min-w-[40px] flex items-center justify-center rounded-full transition-colors active:scale-95 ${
-                  isTransparent
-                    ? 'text-white/90 hover:text-white hover:bg-white/10'
-                    : 'text-gray-600 hover:text-primary hover:bg-gray-100'
-                }`}
-                aria-label="Keranjang Belanja"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                {totalItemsCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#165a3d] text-white text-[10px] font-black flex items-center justify-center animate-pulse shadow-sm">
-                    {totalItemsCount}
-                  </span>
-                )}
-              </Link>
+              {/* Cart Button with Counter Badge - ONLY SHOWN WHEN LOGGED IN */}
+              {user && (
+                <Link
+                  href="/cart"
+                  className={`relative min-h-[40px] min-w-[40px] flex items-center justify-center rounded-full transition-colors active:scale-95 ${
+                    isTransparent
+                      ? 'text-white/90 hover:text-white hover:bg-white/10'
+                      : 'text-gray-600 hover:text-primary hover:bg-gray-100'
+                  }`}
+                  aria-label="Keranjang Belanja"
+                >
+                  <ShoppingBag className="w-5 h-5" />
+                  {totalItemsCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 w-5 h-5 rounded-full bg-[#165a3d] text-white text-[10px] font-black flex items-center justify-center animate-pulse shadow-sm">
+                      {totalItemsCount}
+                    </span>
+                  )}
+                </Link>
+              )}
 
               {/* Login / Register or Profile Buttons */}
               {user ? (
