@@ -27,7 +27,7 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const pathname = usePathname();
-  const { user, loginAs } = useAuth();
+  const { user, logout } = useAuth();
   const { brandName, brandTagline, brandLogoType, brandLogoPreset, brandLogoUrl } = useBrand();
 
   const isStaff = user?.role === 'STAFF';
@@ -154,9 +154,10 @@ export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
           </Link>
 
           <button
-            onClick={() => {
-              loginAs('GUEST');
+            onClick={async () => {
               if (onCloseMobile) onCloseMobile();
+              await logout();
+              window.location.href = '/admin/login';
             }}
             className="text-[11px] text-rose-400 hover:text-rose-300 flex items-center gap-1 transition-colors py-2 min-h-[36px]"
           >

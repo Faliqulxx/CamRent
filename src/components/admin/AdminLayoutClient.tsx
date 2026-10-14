@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import { Menu, Tent, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface AdminLayoutClientProps {
   children: React.ReactNode;
@@ -14,7 +15,26 @@ interface AdminLayoutClientProps {
 }
 
 export default function AdminLayoutClient({ children, user }: AdminLayoutClientProps) {
+  const pathname = usePathname();
+  const router = useRouter();
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+
+  // If on admin login page, render children directly without admin shell
+  if (pathname === '/admin/login') {
+    return <>{children}</>;
+  }
+
+  // If user is not authenticated as OWNER or STAFF, redirect to /admin/login
+  if (!user || (user.role !== 'OWNER' && user.role !== 'STAFF')) {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/admin/login';
+    }
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-bg-light">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen h-[100dvh] bg-bg-light w-full max-w-full overflow-hidden">

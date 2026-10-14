@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/auth';
 import RevenueChart from '@/components/admin/RevenueChart';
@@ -20,6 +21,9 @@ import { id } from 'date-fns/locale';
 
 export default async function AdminDashboardPage() {
   const user = await getCurrentUser();
+  if (!user || (user.role !== 'OWNER' && user.role !== 'STAFF')) {
+    redirect('/admin/login');
+  }
   const today = new Date();
   const todayStart = startOfDay(today);
   const todayEnd = endOfDay(today);
