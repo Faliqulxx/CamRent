@@ -90,7 +90,7 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
   const [pickupConditions, setPickupConditions] = useState<Record<string, string>>({});
   const [collateralReceivedChecked, setCollateralReceivedChecked] = useState(false);
   const [remainingSettledChecked, setRemainingSettledChecked] = useState(false);
-  const [settlementMethod, setSettlementMethod] = useState<'CASH' | 'QRIS' | 'EDC'>('CASH');
+  const [settlementMethod, setSettlementMethod] = useState<'CASH' | 'QRIS' | 'EDC' | 'TRANSFER'>('CASH');
 
   // Return flow state
   const [returnConditions, setReturnConditions] = useState<Record<string, string>>({});
@@ -186,8 +186,8 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
       return;
     }
 
-    if (activeModalRental.paymentType === 'DP' && activeModalRental.remainingAmount > 0 && !remainingSettledChecked) {
-      alert(`Pesanan ini memiliki sisa pelunasan DP sebesar ${formatCurrency(activeModalRental.remainingAmount)}. Konfirmasi penerimaan pelunasan wajib dicentang.`);
+    if (activeModalRental.paymentType === 'DP' && (activeModalRental.remainingAmount ?? 0) > 0 && !remainingSettledChecked) {
+      alert(`Pesanan ini memiliki sisa pelunasan DP sebesar ${formatCurrency(activeModalRental.remainingAmount ?? 0)}. Konfirmasi penerimaan pelunasan wajib dicentang.`);
       return;
     }
 
@@ -411,7 +411,7 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
                         <span className="font-black text-text block">{formatCurrency(r.total)}</span>
                         {r.paymentType === 'DP' ? (
                           <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 mt-0.5">
-                            DP: {formatCurrency(r.dpAmount)} {r.isPaidOff ? '• Lunas' : `(Sisa ${formatCurrency(r.remainingAmount)})`}
+                            DP: {formatCurrency(r.dpAmount ?? 0)} {r.isPaidOff ? '• Lunas' : `(Sisa ${formatCurrency(r.remainingAmount ?? 0)})`}
                           </span>
                         ) : (
                           <span className="text-[10px] text-text-muted block">Lunas Penuh</span>
@@ -519,7 +519,7 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
                       </span>
                       {r.paymentType === 'DP' && (
                         <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 mt-0.5">
-                          DP: {formatCurrency(r.dpAmount)} {r.isPaidOff ? '• Lunas' : `(Sisa ${formatCurrency(r.remainingAmount)})`}
+                          DP: {formatCurrency(r.dpAmount ?? 0)} {r.isPaidOff ? '• Lunas' : `(Sisa ${formatCurrency(r.remainingAmount ?? 0)})`}
                         </span>
                       )}
                     </div>
@@ -681,19 +681,19 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
                 </div>
 
                 {/* Down Payment Settlement at Store (If DP & Remaining > 0) */}
-                {activeModalRental.paymentType === 'DP' && activeModalRental.remainingAmount > 0 && (
+                {activeModalRental.paymentType === 'DP' && (activeModalRental.remainingAmount ?? 0) > 0 && (
                   <div className="p-4 bg-emerald-50 rounded-2xl border-2 border-emerald-300 space-y-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <CreditCard className="w-5 h-5 text-emerald-700 shrink-0" />
                         <div>
                           <span className="font-bold text-emerald-950 text-sm block">Pelunasan Sisa Sewa (DP)</span>
-                          <span className="text-[11px] text-emerald-800">DP Awal: {formatCurrency(activeModalRental.dpAmount)}</span>
+                          <span className="text-[11px] text-emerald-800">DP Awal: {formatCurrency(activeModalRental.dpAmount ?? 0)}</span>
                         </div>
                       </div>
                       <div className="text-right">
                         <span className="text-[10px] uppercase font-bold text-emerald-700 block">Sisa Wajib Lunas</span>
-                        <span className="text-base font-black text-emerald-800">{formatCurrency(activeModalRental.remainingAmount)}</span>
+                        <span className="text-base font-black text-emerald-800">{formatCurrency(activeModalRental.remainingAmount ?? 0)}</span>
                       </div>
                     </div>
 
@@ -702,7 +702,7 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
                         <label className="block text-[11px] font-bold text-emerald-900 mb-1">Metode Pelunasan:</label>
                         <select
                           value={settlementMethod}
-                          onChange={(e) => setSettlementMethod(e.target.value)}
+                          onChange={(e) => setSettlementMethod(e.target.value as 'CASH' | 'QRIS' | 'EDC' | 'TRANSFER')}
                           className="w-full p-2.5 min-h-[44px] bg-white border border-emerald-300 rounded-xl font-bold text-text text-base md:text-xs outline-none"
                         >
                           <option value="CASH">Tunai / Cash</option>
@@ -721,7 +721,7 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
                             className="rounded text-emerald-600 focus:ring-emerald-500 h-5 w-5 shrink-0"
                           />
                           <span className="font-bold text-emerald-950 text-xs leading-snug">
-                            Sisa {formatCurrency(activeModalRental.remainingAmount)} Diterima Kasir *
+                            Sisa {formatCurrency(activeModalRental.remainingAmount ?? 0)} Diterima Kasir *
                           </span>
                         </label>
                       </div>
@@ -741,7 +741,7 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
                     disabled={
                       isProcessing ||
                       !collateralReceivedChecked ||
-                      (activeModalRental.paymentType === 'DP' && activeModalRental.remainingAmount > 0 && !remainingSettledChecked)
+                      (activeModalRental.paymentType === 'DP' && (activeModalRental.remainingAmount ?? 0) > 0 && !remainingSettledChecked)
                     }
                     className="flex-1 sm:flex-none px-6 py-3 min-h-[44px] bg-primary hover:bg-primary-dark disabled:opacity-50 text-white font-bold rounded-xl transition-all shadow-md active:scale-95"
                   >
@@ -919,12 +919,12 @@ export default function RentalsManager({ initialRentals, selectedIdFromUrl }: Re
                       </div>
                       <div className="flex justify-between text-text">
                         <span>DP Dibayar:</span>
-                        <span className="font-bold text-text">{formatCurrency(activeModalRental.dpAmount)}</span>
+                        <span className="font-bold text-text">{formatCurrency(activeModalRental.dpAmount ?? 0)}</span>
                       </div>
                       <div className="flex justify-between text-text">
                         <span>Sisa Pelunasan di Toko:</span>
                         <span className={`font-bold ${activeModalRental.isPaidOff ? 'text-emerald-700' : 'text-rose-600'}`}>
-                          {activeModalRental.isPaidOff ? 'Lunas (Rp 0)' : formatCurrency(activeModalRental.remainingAmount)}
+                          {activeModalRental.isPaidOff ? 'Lunas (Rp 0)' : formatCurrency(activeModalRental.remainingAmount ?? 0)}
                         </span>
                       </div>
                       <div className="flex justify-between text-text">
