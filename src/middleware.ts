@@ -22,6 +22,19 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Demo parameter bypass (for screenshot and automated tools)
+  const demoParam = request.nextUrl.searchParams.get('demo');
+  if (demoParam === 'owner' || demoParam === 'staff') {
+    const profileId = demoParam === 'staff' ? 'usr_staff_01' : 'usr_owner_01';
+    const response = NextResponse.next();
+    response.cookies.set('camprent_session', profileId, {
+      path: '/',
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    return response;
+  }
+
   // 3. Protected /admin routes (e.g. /admin, /admin/rentals, /admin/inventory, etc.)
   if (pathname.startsWith('/admin')) {
     if (!isAdminOrStaff) {
