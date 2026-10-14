@@ -30,8 +30,10 @@ export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
   const { user, loginAs } = useAuth();
   const { brandName, brandTagline, brandLogoType, brandLogoPreset, brandLogoUrl } = useBrand();
 
+  const isStaff = user?.role === 'STAFF';
+
   const navItems = [
-    { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { name: 'Dashboard', href: isStaff ? '/admin?mode=staff' : '/admin', icon: LayoutDashboard },
     { name: 'Manajemen Rental', href: '/admin/rentals', icon: CalendarDays },
     { name: 'Inventori & Unit', href: '/admin/inventory', icon: Boxes },
     { name: 'Kalender Rental', href: '/admin/calendar', icon: Calendar },
@@ -42,14 +44,12 @@ export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
     { name: 'Pengaturan Toko', href: '/admin/settings', icon: Settings, ownerOnly: true },
   ];
 
-  const isStaff = user?.role === 'STAFF';
-
   return (
     <aside className="w-64 bg-sidebar-bg text-white flex flex-col shrink-0 h-full border-r border-sidebar-active select-none">
       {/* Brand Header */}
       <div className="p-4 sm:p-5 border-b border-sidebar-active/60 flex items-center justify-between">
         <Link
-          href="/admin"
+          href={isStaff ? '/admin?mode=staff' : '/admin'}
           onClick={onCloseMobile}
           className="flex items-center gap-3 min-h-[44px]"
         >
@@ -104,10 +104,10 @@ export default function AdminSidebar({ onCloseMobile }: AdminSidebarProps) {
             return null;
           }
 
-          const isActive =
-            item.href === '/admin'
-              ? pathname === '/admin'
-              : pathname.startsWith(item.href);
+          const isDashboard = item.href.startsWith('/admin') && (item.href === '/admin' || item.href.startsWith('/admin?'));
+          const isActive = isDashboard
+            ? pathname === '/admin'
+            : pathname.startsWith(item.href);
 
           const Icon = item.icon;
 

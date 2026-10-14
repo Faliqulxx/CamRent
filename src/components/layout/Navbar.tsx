@@ -9,8 +9,6 @@ import {
   User,
   Menu,
   X,
-  Shield,
-  ChevronDown,
   ArrowRight,
   LogOut,
   Calendar,
@@ -28,7 +26,6 @@ export default function Navbar() {
   const { brandName, brandTagline, brandLogoType, brandLogoPreset, brandLogoUrl } = useBrand();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const isHome = pathname === '/';
@@ -50,7 +47,6 @@ export default function Navbar() {
   // Close drawer on route change
   useEffect(() => {
     setDrawerOpen(false);
-    setRoleDropdownOpen(false);
   }, [pathname]);
 
   // Lock body scroll when mobile drawer is open
@@ -197,78 +193,12 @@ export default function Navbar() {
                 )}
               </Link>
 
-              {/* Role Switcher Demo Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
-                  className={`min-h-[38px] flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-full transition-all border ${
-                    isTransparent
-                      ? 'bg-black/30 backdrop-blur-md text-white border-white/20 hover:bg-black/50'
-                      : 'bg-emerald-50 text-emerald-800 border-emerald-200 hover:bg-emerald-100'
-                  }`}
-                  title="Ganti peran akun pengujian"
-                >
-                  <Shield className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">Role:</span>
-                  <span>{user ? user.role : 'GUEST'}</span>
-                  <ChevronDown className="w-3 h-3 opacity-70" />
-                </button>
-
-                {roleDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-52 rounded-2xl bg-white shadow-2xl border border-border p-1.5 z-50 animate-in fade-in slide-in-from-top-1 text-gray-800">
-                    <div className="px-3 py-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                      Uji Coba Peran Pengguna
-                    </div>
-                    <button
-                      onClick={() => {
-                        loginAs('OWNER');
-                        setRoleDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-emerald-50 text-gray-700 hover:text-emerald-800 transition-colors flex items-center justify-between min-h-[40px]"
-                    >
-                      <span>Owner (Budi)</span>
-                      {user?.role === 'OWNER' && <span className="w-2 h-2 rounded-full bg-emerald-600" />}
-                    </button>
-                    <button
-                      onClick={() => {
-                        loginAs('STAFF');
-                        setRoleDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-emerald-50 text-gray-700 hover:text-emerald-800 transition-colors flex items-center justify-between min-h-[40px]"
-                    >
-                      <span>Staff (Rian)</span>
-                      {user?.role === 'STAFF' && <span className="w-2 h-2 rounded-full bg-emerald-600" />}
-                    </button>
-                    <button
-                      onClick={() => {
-                        loginAs('CUSTOMER');
-                        setRoleDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-emerald-50 text-gray-700 hover:text-emerald-800 transition-colors flex items-center justify-between min-h-[40px]"
-                    >
-                      <span>Customer (Dimas)</span>
-                      {user?.role === 'CUSTOMER' && <span className="w-2 h-2 rounded-full bg-emerald-600" />}
-                    </button>
-                    <button
-                      onClick={() => {
-                        loginAs('GUEST');
-                        setRoleDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-3 py-2 text-xs font-semibold rounded-xl hover:bg-red-50 text-red-600 transition-colors flex items-center justify-between min-h-[40px]"
-                    >
-                      <span>Guest (Tamu / Logout)</span>
-                      {!user && <span className="w-2 h-2 rounded-full bg-red-500" />}
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              {/* Login / Register Buttons matching screenshot */}
+              {/* Login / Register or Profile Buttons */}
               {user ? (
                 <div className="hidden sm:flex items-center gap-2">
                   {user.role === 'OWNER' || user.role === 'STAFF' ? (
                     <Link
-                      href="/admin"
+                      href={user.role === 'STAFF' ? '/admin?mode=staff' : '/admin'}
                       className="inline-flex items-center gap-1.5 px-4 py-2 min-h-[38px] text-xs font-bold rounded-full bg-[#165a3d] text-white hover:bg-[#124b32] transition-colors shadow-sm"
                     >
                       <span>Portal Admin</span>
@@ -282,6 +212,18 @@ export default function Navbar() {
                       <span>My Rental</span>
                     </Link>
                   )}
+                  <button
+                    onClick={() => logout()}
+                    className={`min-h-[38px] min-w-[38px] flex items-center justify-center rounded-full transition-all border ${
+                      isTransparent
+                        ? 'bg-black/30 backdrop-blur-md text-white border-white/20 hover:bg-black/50 hover:text-red-300'
+                        : 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200'
+                    }`}
+                    title="Keluar (Logout)"
+                    aria-label="Logout"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
                 </div>
               ) : (
                 <div className="hidden sm:flex items-center gap-3">
