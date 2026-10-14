@@ -278,8 +278,8 @@ export default function SettingsManager({ initialSettings, staffList }: Settings
                     />
                   </div>
                   <div>
-                    <span className="text-base font-black block leading-tight">
-                      <BrandNameDisplay name={brandName} isDark={true} />
+                    <span className="text-base font-black text-white block leading-tight">
+                      {brandName || 'CampRent'}
                     </span>
                     {brandTagline && (
                       <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-400 block">
